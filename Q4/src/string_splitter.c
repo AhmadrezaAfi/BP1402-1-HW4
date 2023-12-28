@@ -20,7 +20,6 @@ char** splitstring(const char* input, char delimiter, int* substringCount ){
         token = strtok(NULL, del);
         (*substringCount)++;
    }
-   
    return result;
 }
 
