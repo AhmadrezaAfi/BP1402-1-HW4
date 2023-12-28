@@ -27,7 +27,7 @@ void fillToeplitz(int** matrix, int n, int* ptr) {
 
 // check elements f matrix
 int checkMatrix(int** matrix, int i, int j){
-    return matrix[i][j];
+    return matrix[i-1][j-1];
 }
 
 // printMatrix
@@ -63,14 +63,14 @@ int determinantMatrix(int** matrix, int n) {
 			}                                 
 
 		}
-		printMatrix(*arr1, n-1, n-1);
+//		printMatrix(*arr1, n-1, n-1);
 		if (i%2==0) 
 		    det=det+determinantMatrix(*arr1, n-1)*matrix[0][i];
 		else
 		    det=det-determinantMatrix(*arr1, n-1)*matrix[0][i];
 	}
 	return det;
-    
+
 }
 
 
