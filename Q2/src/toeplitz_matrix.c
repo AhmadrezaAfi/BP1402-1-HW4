@@ -50,27 +50,26 @@ int determinantMatrix(int** matrix, int n) {
 		return det;
 	}
 	for (int i=0; i<n; i++){
-		int*** arr1;
-		allocateMatrix(arr1, n-1, n-1);
+		int** arr1;
+		allocateMatrix(&arr1, n-1, n-1);
 		for (int j=0; j<n-1; j++){
 			for(int m=0; m<n-1; m++){
 				if (m>=i){
-					(*arr1)[j][m] = matrix[j+1][m+1];
+					(arr1)[j][m] = matrix[j+1][m+1];
 				}
 				else{
-				    (*arr1)[j][m] = matrix[j+1][m];
+				    (arr1)[j][m] = matrix[j+1][m];
 			    }
 			}                                 
 
 		}
 //		printMatrix(*arr1, n-1, n-1);
 		if (i%2==0) 
-		    det=det+determinantMatrix(*arr1, n-1)*matrix[0][i];
+		    det=det+determinantMatrix(arr1, n-1)*matrix[0][i];
 		else
-		    det=det-determinantMatrix(*arr1, n-1)*matrix[0][i];
+		    det=det-determinantMatrix(arr1, n-1)*matrix[0][i];
 	}
 	return det;
-
 }
 
 
