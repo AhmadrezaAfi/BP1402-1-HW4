@@ -23,26 +23,32 @@ char** splitString(const char *input, char delimiter, int *substringCount) {
 		}
 		if(!pdelimiter)
 		    break;
-		result[*substringCount] = (char* )malloc(100*sizeof(char));
+		if(*substringCount<100)
+		    result[*substringCount] = (char* )malloc(100*sizeof(char));
 		strncpy(str2, str1, (pdelimiter-Pstr1+counter));
 	    str2[pdelimiter-Pstr1] = '\0';
 	    strcpy(str1, pdelimiter+1+counter);
-	    strcpy(result[*substringCount], str2);
+		if(strlen(str2)<100&&*substringCount<100)
+	        strcpy(result[*substringCount], str2);
 	    (*substringCount)++;
 	}
-	result[*substringCount] = (char* )malloc(100*sizeof(char));
+	if(*substringCount<100)
+	    result[*substringCount] = (char* )malloc(100*sizeof(char));
+	if(strlen(str2)<100&&*substringCount<100)
 	strcpy(result[*substringCount], str1);
-    (*substringCount)++;
+        (*substringCount)++;
 	return result;
 
 }
 
 void freeSubstrings(char **substrings, int count) {
 
-    for (int i=0; i<count; i++){
-		free(substrings[i]);
-	}
+    if(substrings){
+        for (int i=0; i<count; i++){
+		    free(substrings[i]);
+	    }
 	free(substrings);
+	}
 
 }
 
