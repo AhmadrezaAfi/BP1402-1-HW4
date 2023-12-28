@@ -17,6 +17,33 @@ char** splitString(const char *input, char delimiter, int *substringCount) {
     // Input: "SingleString", delimiter = ',', substringCount points to an integer
     // Expected Output: ["SingleString"]
     // After execution, *substringCount should be updated to 1
+    char **result = (char** )malloc(100*sizeof(char *));
+	char str1[1000], str2[100];
+	char* Pstr1, *pdelimiter;
+	Pstr1 = &str1[0];
+	strcpy(str1, input);
+	while (true){
+		int counter=0;
+		pdelimiter = strchr(str1, delimiter);
+		while(pdelimiter==Pstr1){
+			strcpy(str1, pdelimiter+1+counter);
+			pdelimiter = strchr(str1, delimiter);
+		}
+		while(pdelimiter!=NULL && str1[pdelimiter-Pstr1+1+counter]==delimiter){
+			counter++;
+		}
+		if(!pdelimiter)
+		    break;
+		result[*substringCount] = (char* )malloc(100*sizeof(char));
+		strncpy(str2, str1, (pdelimiter-Pstr1+counter));
+	    str2[pdelimiter-Pstr1] = '\0';
+	    strcpy(str1, pdelimiter+1+counter);
+	    strcpy(result[*substringCount], str2);
+	    (*substringCount)++;
+	}
+	result[*substringCount] = (char* )malloc(100*sizeof(char));
+	strcpy(result[*substringCount], str1);
+	return result;
 
 }
 
@@ -26,6 +53,10 @@ void freeSubstrings(char **substrings, int count) {
     // Sample Case:
     // Input: Array of substrings ["Hello", "World", "Test"], count = 3
     // Operation: Frees memory for each substring and then the array itself
+    for (int i=0; i<count; i++){
+		free(substrings[i]);
+	}
+	free(substrings);
 
 }
 
