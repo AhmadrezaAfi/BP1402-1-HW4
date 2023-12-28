@@ -9,7 +9,7 @@ char** splitstring(const char* input, char delimiter, int* substringCount ){
 	char* inp;
 	inp = strdup(input);
 	del[0]=delimiter; del[1]='\0';
-	char **result = (char** )malloc(Max*sizeof(char *));
+	char **result = (char** )malloc(100*sizeof(char *));
 	char* token;
 	token = strtok(inp, del);
 
