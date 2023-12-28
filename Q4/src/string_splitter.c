@@ -43,6 +43,7 @@ char** splitString(const char *input, char delimiter, int *substringCount) {
 	}
 	result[*substringCount] = (char* )malloc(100*sizeof(char));
 	strcpy(result[*substringCount], str1);
+    (*substringCount)++;
 	return result;
 
 }
