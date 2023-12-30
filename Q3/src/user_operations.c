@@ -20,18 +20,28 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     	if (c=='\n')
     	    lines++;
 	} while(c!=EOF);
-
+    *size = lines;
     // Rewind the file to the beginning
     rewind(pfile);
-
     // Allocate memory for stored_data
-    *stored_data = (char** )malloc((lines)*sizeof(char* ));
-    (*stored_data)[lines]=NULL;
-    for(int i=0; i<lines; i++)
-        (*stored_data)[i]=(char* )malloc((*size)*sizeof(char));
+    stored_data[0] = (char**)malloc(lines * sizeof(char*));
+    if (stored_data == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        exit(EXIT_FAILURE);
+    }
+
+
+    for(int i=0; i<lines; i++){
+        if ((stored_data)[0][i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            exit(EXIT_FAILURE);
+    }
+        (*stored_data)[i]=(char* )malloc(100*sizeof(char));
+
+    }
     // Read user data from the file
     for(int i=0; i<lines; i++){
-    	fgets((*stored_data)[i], *size, pfile);
+    	fgets((*stored_data)[i], 100, pfile);
 	}
 //    for(int i=0; i<lines; i++){
 //        printf("1");
@@ -42,9 +52,16 @@ void show_users(char **stored_data, int size) {
 	int count = 0;
 	do{
 		char* uname;
-		uname = (char*)malloc(size*sizeof(char));
-
+		uname = (char*)malloc(100*sizeof(char));
     // Extract the user name from the stored data
+        if (count>size || count<0) {
+            exit(EXIT_FAILURE);
+        }
+        if (!stored_data[count]) {
+            fprintf(stderr, "stored_data[count] is not initialized.\n");
+            exit(EXIT_FAILURE);
+        }
+
         char* pname = strchr((stored_data[count]), ' ');
         strncpy(uname, stored_data[count], pname-stored_data[count]);
         uname[(int)(pname-stored_data[count])] = '\0';
@@ -66,25 +83,29 @@ void show_users(char **stored_data, int size) {
 		}
     // Print the formatted user name
 	   printf("%s\n", uname);
-    } while(stored_data[count]);
-    printf("%d\n", count);
+       free(uname);
+    } while(count<size);
+
 
 }
 
 void new_user(char ***stored_data, int *size, const char *user_name, const char *email, const char *password) {
-    int count = 0;
-    while ((*stored_data)[count] != NULL) {
-        count++;
-    }
+    int count = *size;
     // Check if the user already exists
-    char *new_user_data = (char*)malloc(*size * sizeof(char));
+    char *new_user_data = (char*)malloc(100 * sizeof(char));
     strcpy(new_user_data, user_name);
     strcat(new_user_data, " ");
     strcat(new_user_data, email);
     strcat(new_user_data, " ");
     strcat(new_user_data, password);
-
-    for (int i = 0; i < count; ++i) {
+    for (int i = 0; i < count-1; i++) {
+        if (i>*size || count<0) {
+            exit(EXIT_FAILURE);
+        }
+        if (!(*stored_data)[i]) {
+            fprintf(stderr, "stored_data[count] is not initialized.\n");
+            exit(EXIT_FAILURE);
+        }
         if (strcmp((*stored_data)[i], new_user_data) == 0) {
             free(new_user_data);
             printf("User already exists!\n");
@@ -100,6 +121,7 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     // Add the new user data
     (*stored_data)[count] = new_user_data;
     (*stored_data)[count + 1] = NULL;
+    *size = count+1;
     printf("New user added!\n");
 }
 
@@ -112,12 +134,11 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
     int i;
     for (i = 0; i < count; ++i) {
 		char* uname;
-		uname = (char*)malloc((*size)*sizeof(char));
+		uname = (char*)malloc(100*sizeof(char));
 
         char* pname = strchr(((*stored_data[i])), ' ');
         strncpy(uname, ((*stored_data[i])), pname-((*stored_data[i])));
         uname[(int)(pname-((*stored_data[i])))] = '\0';
-        printf("%s_______%s\n", uname, user_name);
         if (strcmp(uname, user_name) == 0) {
             free((*stored_data)[i]);
             break;
@@ -134,6 +155,7 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
     // Resize the stored_data array
     (*stored_data)=(char**)realloc(*stored_data, (count -1) * sizeof(char*));
     (*stored_data)[count - 1] = NULL;
+    *size = count-1;
     printf("User deleted!\n");
 }
 
@@ -145,9 +167,8 @@ void email_cnt(char **stored_data, int size) {
     }
     char** E_data = (char**)malloc((count+1)*sizeof(char*));
     for(int i=0; i<count; i++){
-    	E_data[i] = (char*)malloc(size*sizeof(char));
+    	E_data[i] = (char*)malloc(100*sizeof(char));
 	}
-	printf("%d\n", count);
 	E_data[count]=NULL;
 	for(int i=0; i<count; i++){
         char* flag1 = strchr(stored_data[i], '@');
@@ -156,7 +177,7 @@ void email_cnt(char **stored_data, int size) {
         	flag2 = strchr((stored_data)[i]+(int)(flag2-stored_data[i]+1), '.');
 		}
         strncpy(E_data[i], stored_data[i]+(int)(flag1-stored_data[i])+1, flag2-flag1-1);
-        E_data[i][(int)(flag2-flag1)] = '\0';
+        E_data[i][(int)(flag2-flag1)-1] = '\0';
 	}
 
 
