@@ -9,7 +9,10 @@
 void read_backup_file(char ***stored_data, int *size, const char *backup_file_name) {
     // Open the file
     FILE* pfile = fopen(backup_file_name, "r");
-
+    if(pfile==NULL){
+         fprintf(stderr, "file not foun allocation failed\n");
+         exit(EXIT_FAILURE);
+    }
     // Count the number of users in the file
     int lines = 0;
     char c;
