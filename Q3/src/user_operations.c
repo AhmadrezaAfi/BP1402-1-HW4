@@ -24,7 +24,8 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     // Rewind the file to the beginning
     rewind(pfile);
     // Allocate memory for stored_data
-    stored_data[0] = (char**)malloc(lines * sizeof(char*));
+    stored_data[0] = (char**)malloc((lines+1) * sizeof(char*));
+    stored_data[0][lines]=NULL;
     if (stored_data == NULL) {
         fprintf(stderr, "Memory allocation failed\n");
         exit(EXIT_FAILURE);
@@ -85,7 +86,6 @@ void show_users(char **stored_data, int size) {
 	   printf("%s\n", uname);
        free(uname);
     } while(count<size);
-
 
 }
 
