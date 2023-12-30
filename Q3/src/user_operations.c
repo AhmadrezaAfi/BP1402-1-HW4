@@ -26,17 +26,17 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     // Allocate memory for stored_data
     stored_data[0] = (char**)malloc((lines+1) * sizeof(char*));
     stored_data[0][lines]=NULL;
-    if (stored_data == NULL) {
-        fprintf(stderr, "Memory allocation failed\n");
-        exit(EXIT_FAILURE);
-    }
+    // if (stored_data == NULL) {
+    //     fprintf(stderr, "Memory allocation failed\n");
+    //     exit(EXIT_FAILURE);
+    // }
 
 
     for(int i=0; i<lines; i++){
-        if ((stored_data)[0][i] == NULL) {
-            fprintf(stderr, "Memory allocation failed\n");
-            exit(EXIT_FAILURE);
-    }
+    //     if ((stored_data)[0][i] == NULL) {
+    //         fprintf(stderr, "Memory allocation failed\n");
+    //         exit(EXIT_FAILURE);
+    // }
         (*stored_data)[i]=(char* )malloc(100*sizeof(char));
 
     }
