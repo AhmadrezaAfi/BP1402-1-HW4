@@ -36,12 +36,11 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 
 
     for(int i=0; i<lines; i++){
+        stored_data[0][i]=(char* )malloc(100*sizeof(char));
         if ((stored_data)[0][i] == NULL) {
             fprintf(stderr, "Memory allocation failed\n");
             exit(EXIT_FAILURE);
-    }
-        (*stored_data)[i]=(char* )malloc(100*sizeof(char));
-
+        }
     }
     // Read user data from the file
     for(int i=0; i<lines; i++){
