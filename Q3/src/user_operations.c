@@ -60,6 +60,7 @@ void show_users(char **stored_data, int size) {
         if (count>size || count<0) {
             exit(EXIT_FAILURE);
         }
+        printf("%s\n", stored_data[count]);
         if (!stored_data[count]) {
             fprintf(stderr, "stored_data[count] is not initialized.\n");
             exit(EXIT_FAILURE);
