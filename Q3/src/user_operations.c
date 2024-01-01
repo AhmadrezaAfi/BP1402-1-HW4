@@ -4,7 +4,7 @@
 #include <ctype.h>
 #include "../include/user_operations.h"
 
-//#define MAX_USER_DATA_LENGTH 100
+// #define MAX_USER_DATA_LENGTH 100
 int MAX_USER_DATA_LENGTH = 100;
 void read_backup_file(char ***stored_data, int *size, const char *backup_file_name) {
     FILE *pfile = fopen(backup_file_name, "r");
@@ -60,17 +60,17 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 
     fclose(pfile);
     *stored_data = data;
+    printf("1");
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
 	do{
 		char* uname;
 		uname = (char*)malloc(100*sizeof(char));
-    // Extract the user name from the stored data
         if (count>size || count<0) {
+            fprintf(stderr, "Trying to access not available memory.\n");
             exit(EXIT_FAILURE);
         }
-        printf("%s\n", stored_data[count]);
         if (!stored_data[count]) {
             fprintf(stderr, "stored_data[count] is not initialized.\n");
             exit(EXIT_FAILURE);
