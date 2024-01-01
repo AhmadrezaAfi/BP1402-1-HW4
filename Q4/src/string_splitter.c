@@ -9,14 +9,13 @@ char** splitstring(const char* input, char delimiter, int* substringCount ){
 	char* inp;
 	inp = strdup(input);
 	del[0]=delimiter; del[1]='\0';
-	char **result = (char** )malloc(100*sizeof(char *));
+	char **result = (char** )malloc(strlen(input)*sizeof(char *));
 	char* token;
 	token = strtok(inp, del);
 
 	while( token != NULL ) {
-        result[*substringCount] = (char* )malloc((token-input)*sizeof(char));
-        result[*substringCount] = token;
-        printf("%s\n",result[*substringCount] );
+        result[*substringCount] = (char* )malloc((strlen(token)+1)*sizeof(char));
+        strcpy(result[*substringCount], token);
         token = strtok(NULL, del);
         (*substringCount)++;
    }
@@ -29,4 +28,3 @@ void freeSubstrings(char** substrings, int count){
 	}
 	free(substrings);
 }
-
