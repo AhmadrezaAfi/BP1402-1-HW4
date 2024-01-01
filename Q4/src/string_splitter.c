@@ -19,6 +19,7 @@ char** splitString(const char* input, char delimiter, int* substringCount ){
         token = strtok(NULL, del);
         (*substringCount)++;
    }
+   free(inp);
    return result;
 }
 
