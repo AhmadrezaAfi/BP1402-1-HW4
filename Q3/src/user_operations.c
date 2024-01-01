@@ -60,7 +60,6 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 
     fclose(pfile);
     *stored_data = data;
-    printf("1");
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
@@ -82,8 +81,14 @@ void show_users(char **stored_data, int size) {
         count++;
     // Capitalize the first letter of each word in the user name
         for(size_t i=0; i<strlen(uname); i++){
-        	if(uname[i]=='_')
+        	if(uname[i]=='_'){
+                i++;
+                if(uname[i] >= 'a' && uname[i] <= 'z') {
+                    uname[i] = uname[i] -32;
+                }
         	    continue;
+            
+            }
         	if(uname[i-1]=='_'||i==0){
 	        	if(uname[i] >= 'a' && uname[i] <= 'z') {
 	                uname[i] = uname[i] -32;
