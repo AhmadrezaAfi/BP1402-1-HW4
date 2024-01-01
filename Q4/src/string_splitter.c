@@ -4,7 +4,7 @@
 #include <ctype.h> 
 
 
-char** splitstring(const char* input, char delimiter, int* substringCount ){
+char** splitString(const char* input, char delimiter, int* substringCount ){
 	char del[2];
 	char* inp;
 	inp = strdup(input);
