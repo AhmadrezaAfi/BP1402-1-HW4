@@ -81,7 +81,7 @@ void show_users(char **stored_data, int size) {
         uname[(int)(pname-stored_data[count])] = '\0';
         count++;
     // Capitalize the first letter of each word in the user name
-        for(int i=0; i<strlen(uname); i++){
+        for(size_t i=0; i<strlen(uname); i++){
         	if(uname[i]=='_')
         	    continue;
         	if(uname[i-1]=='_'||i==0){
