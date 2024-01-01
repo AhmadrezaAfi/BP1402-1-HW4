@@ -4,8 +4,8 @@
 #include <ctype.h>
 #include "../include/user_operations.h"
 
-#define MAX_USER_DATA_LENGTH 100
-
+//#define MAX_USER_DATA_LENGTH 100
+int MAX_USER_DATA_LENGTH = 100;
 void read_backup_file(char ***stored_data, int *size, const char *backup_file_name) {
     FILE *pfile = fopen(backup_file_name, "r");
     if (!pfile) {
