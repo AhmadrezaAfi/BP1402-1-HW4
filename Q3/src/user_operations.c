@@ -7,15 +7,16 @@
 // #define MAX_USER_DATA_LENGTH 100
 
 void read_backup_file(char ***stored_data, int *size, const char *backup_file_name) {
-    // Open the file
-    FILE* pfile = fopen(backup_file_name, "r");
-    if(pfile==NULL){
-         fprintf(stderr, "file not foun allocation failed\n");
-         exit(EXIT_FAILURE);
+    FILE *pfile = fopen(backup_file_name, "r");
+    if (!pfile) {
+        perror("Error opening file");
+        return;
     }
-    // Count the number of users in the file
+
+    char line[MAX_USER_DATA_LENGTH];
     int lines = 0;
     char c;
+    // Count the number of users in the file
 
     do
     {
@@ -24,32 +25,41 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     	    lines++;
 	} while(c!=EOF);
     *size = lines;
+    
+    if (lines == 0) {
+        return;
+    }
+
     // Rewind the file to the beginning
     rewind(pfile);
+
     // Allocate memory for stored_data
-    stored_data[0] = (char**)malloc((lines+1) * sizeof(char*));
-    stored_data[0][lines]=NULL;
-    // if (stored_data == NULL) {
-    //     fprintf(stderr, "Memory allocation failed\n");
-    //     exit(EXIT_FAILURE);
-    // }
-
-
-    for(int i=0; i<lines; i++){
-        stored_data[0][i]=(char* )malloc(100*sizeof(char));
-        if ((stored_data)[0][i] == NULL) {
-            fprintf(stderr, "Memory allocation failed\n");
-            exit(EXIT_FAILURE);
-        }
+    char **data = (char **)malloc(lines * sizeof(char *));
+    if (!data) {
+        perror("Memory allocation failed");
+        return;
     }
-    // Read user data from the file
-    for(int i=0; i<lines; i++){
-    	fgets((*stored_data)[i], 100, pfile);
-	}
-//    for(int i=0; i<lines; i++){
-//        printf("1");
-//    	fscanf(pfile, ("%s %s %s"), (*stored_data)[i][0], (*stored_data)[i][1], (*stored_data)[i][2]);
-//	}
+
+    int i = 0;
+    while (i < lines) {
+        fgets(line, MAX_USER_DATA_LENGTH, pfile);
+        if(line==NULL){
+        	perror("problem occured");
+        	return;
+		}
+        line[strcspn(line, "\r\n")] = '\0';
+
+        data[i] = (char *)malloc(strlen(line) + 1);
+        if (!data[i]) {
+            perror("Memory allocation failed");
+            return;
+        }
+        strcpy(data[i], line);
+        i++;
+    }
+
+    fclose(pfile);
+    *stored_data = data;
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
