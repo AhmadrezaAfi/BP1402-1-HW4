@@ -5,6 +5,7 @@
 
 
 char** splitString(const char* input, char delimiter, int* substringCount ){
+	*substringCount = 0;
 	char del[2];
 	char* inp;
 	inp = strdup(input);
