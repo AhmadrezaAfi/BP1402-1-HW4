@@ -19,7 +19,7 @@ char** splitString(const char* input, char delimiter, int* substringCount ){
 	if(count<len){
 	    if(input[count]==delimiter){
 	    	(*substringCount)++;
-	    	result[*substringCount]="";
+	    	result[*substringCount]=strdup("");
 	    	count++;
         	while(input[count]==delimiter){
         		count++;
