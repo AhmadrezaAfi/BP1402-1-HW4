@@ -4,8 +4,10 @@
 #include <ctype.h>
 #include "../include/user_operations.h"
 
-// #define MAX_USER_DATA_LENGTH 100
-int MAX_USER_DATA_LENGTH = 100;
+#define MAX_USER_DATA_LENGTH 100
+
+
+
 void read_backup_file(char ***stored_data, int *size, const char *backup_file_name) {
     FILE *pfile = fopen(backup_file_name, "r");
     if (!pfile) {
@@ -34,11 +36,12 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     rewind(pfile);
 
     // Allocate memory for stored_data
-    char **data = (char **)malloc(lines * sizeof(char *));
+    char **data = (char **)malloc((lines+1) * sizeof(char *));
     if (!data) {
         perror("Memory allocation failed");
         return;
     }
+    data[lines]=NULL;
 
     int i = 0;
     while (i < lines) {
@@ -49,7 +52,7 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 		}
         line[strcspn(line, "\r\n")] = '\0';
 
-        data[i] = (char *)malloc(strlen(line) + 1);
+        data[i] = (char *)malloc((strlen(line) + 1)*sizeof(char));
         if (!data[i]) {
             perror("Memory allocation failed");
             return;
@@ -64,19 +67,18 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 void show_users(char **stored_data, int size) {
 	int count = 0;
 	do{
-		char* uname;
-		uname = (char*)malloc(100*sizeof(char));
-        if (count>size || count<0) {
-            fprintf(stderr, "Trying to access not available memory.\n");
-            exit(EXIT_FAILURE);
-        }
+		char uname[MAX_USER_DATA_LENGTH];
+    // Extract the user name from the stored data
+//        if (count>size || count<0) {
+//            exit(EXIT_FAILURE);
+//        }
         if (!stored_data[count]) {
-            fprintf(stderr, "stored_data[count] is not initialized.\n");
-            exit(EXIT_FAILURE);
+            perror("stored_data[count] is not initialized.\n");
+            return;
         }
 
         char* pname = strchr((stored_data[count]), ' ');
-        strncpy(uname, stored_data[count], pname-stored_data[count]);
+        strncpy(uname, stored_data[count], (size_t)(pname-(stored_data[count])));
         uname[(int)(pname-stored_data[count])] = '\0';
         count++;
     // Capitalize the first letter of each word in the user name
@@ -89,10 +91,11 @@ void show_users(char **stored_data, int size) {
         	    continue;
             
             }
-        	if(uname[i-1]=='_'||i==0){
+        	if(i==0){
 	        	if(uname[i] >= 'a' && uname[i] <= 'z') {
 	                uname[i] = uname[i] -32;
 	            }
+    
             }
             else{
 				if(uname[i] >= 'A' && uname[i] <= 'Z') {
@@ -102,7 +105,6 @@ void show_users(char **stored_data, int size) {
 		}
     // Print the formatted user name
 	   printf("%s\n", uname);
-       free(uname);
     } while(count<size);
 
 }
@@ -110,12 +112,14 @@ void show_users(char **stored_data, int size) {
 void new_user(char ***stored_data, int *size, const char *user_name, const char *email, const char *password) {
     int count = *size;
     // Check if the user already exists
-    char *new_user_data = (char*)malloc(100 * sizeof(char));
+    char new_user_data[MAX_USER_DATA_LENGTH];
     strcpy(new_user_data, user_name);
     strcat(new_user_data, " ");
     strcat(new_user_data, email);
     strcat(new_user_data, " ");
     strcat(new_user_data, password);
+    new_user_data[strlen(user_name)+strlen(email)+strlen(password)+2]='\0';
+
     for (int i = 0; i < count-1; i++) {
         if (i>*size || count<0) {
             exit(EXIT_FAILURE);
@@ -125,7 +129,6 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
             exit(EXIT_FAILURE);
         }
         if (strcmp((*stored_data)[i], new_user_data) == 0) {
-            free(new_user_data);
             printf("User already exists!\n");
             return;
         }
@@ -133,21 +136,20 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     // Allocate memory for the new user data
     // Format the new user data
     // Resize the stored_data array
-    char **temp = (char**)realloc(*stored_data, (count + 2) * sizeof(char*));
-    *stored_data = temp;
 
+    (*stored_data) = (char**)realloc((*stored_data), (count + 2) * sizeof(char*));
+//    *stored_data = temp;
     // Add the new user data
-    (*stored_data)[count] = new_user_data;
+    (*stored_data)[count] = (char*)malloc(strlen(new_user_data)*sizeof(char));
+    strcpy((*stored_data)[count], new_user_data);
     (*stored_data)[count + 1] = NULL;
-    *size = count+1;
+    (*size)++;
+
     printf("New user added!\n");
 }
 
 void delete_user(char ***stored_data, int *size, const char *user_name) {
-    int count = 0;
-    while ((*stored_data)[count] != NULL) {
-        count++;
-    }
+    int count = *size;
     // Free memory for the deleted user data
     int i;
     for (i = 0; i < count; ++i) {
@@ -159,6 +161,12 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
         uname[(int)(pname-((*stored_data[i])))] = '\0';
         if (strcmp(uname, user_name) == 0) {
             free((*stored_data)[i]);
+            for(int j=i; j<count-1; j++){
+            	(*stored_data)[j]=(*stored_data)[j+1];
+			}
+			(*stored_data)=(char**)realloc((*stored_data), (count)*sizeof(char*));
+			(*stored_data)[count-1]=NULL;
+			(*size)--;
             break;
         }
     }
@@ -167,35 +175,38 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
     	return;
 	}
     // Shift the remaining users to fill the gap
-    for(int j=i; j<count-1; j++){
-    	(*stored_data)[j]=(*stored_data)[j+1];
-	}
-    // Resize the stored_data array
-    (*stored_data)=(char**)realloc(*stored_data, (count -1) * sizeof(char*));
-    (*stored_data)[count - 1] = NULL;
-    *size = count-1;
+//    for(int j=i; j<count-1; j++){
+//    	(*stored_data)[j]=(*stored_data)[j+1];
+//	}
+//    // Resize the stored_data array
+//    (*stored_data)=(char**)realloc(*stored_data, (count -1) * sizeof(char*));
+//    (*stored_data)[count - 1] = NULL;
+//    *size = count-1;
     printf("User deleted!\n");
 }
 
 void email_cnt(char **stored_data, int size) {
+
 	int mailcounter[5]={0};
-	int count = 0;
-    while ((stored_data)[count] != NULL) {
-        count++;
-    }
+	int count = size;
+
     char** E_data = (char**)malloc((count+1)*sizeof(char*));
+    E_data[count]=NULL;
     for(int i=0; i<count; i++){
     	E_data[i] = (char*)malloc(100*sizeof(char));
 	}
-	E_data[count]=NULL;
+
 	for(int i=0; i<count; i++){
         char* flag1 = strchr(stored_data[i], '@');
         char* flag2 = strchr((stored_data)[i], '.');
         if(flag1>flag2){
         	flag2 = strchr((stored_data)[i]+(int)(flag2-stored_data[i]+1), '.');
 		}
+		
         strncpy(E_data[i], stored_data[i]+(int)(flag1-stored_data[i])+1, flag2-flag1-1);
+
         E_data[i][(int)(flag2-flag1)-1] = '\0';
+        
 	}
 
 
@@ -224,18 +235,27 @@ void email_cnt(char **stored_data, int size) {
 
 
 void end_program(char ***stored_data, int size) {
-	int count=0;
-    while ((stored_data)[count] != NULL) {
-        count++;
+	int count=size;
+    FILE *backup_file = fopen("HW4_Datasets_1.txt", "w");
+    // Only proceed if the file opened successfully.
+    if (backup_file != NULL) {
+        for (int i = 0; i < count; i++) {
+            // Check if string is not NULL before writing.
+            if ((*stored_data)[i] != NULL) {
+                fprintf(backup_file, "%s\n", (*stored_data)[i]);
+            }
+        }
+        fclose(backup_file); // Close the file when done.
+    } 
+    else {
+        // Handle error - file opening failed.
+        perror("Error opening backup file");
+        return;
     }
-    FILE *backup_file = fopen("C:\\Documents\\HW4_Datasets_1.txt", "w");
-    for(int i=0; i<count; i++){
-    	fprintf(backup_file, "%s\n", (*stored_data)[i]);
-	}
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count-1; i++) {
         free((*stored_data)[i]);
     }
     free(*stored_data);
-    remove("C:\\Documents\\HW4_Datasets_1.txt");
+//    remove("C:\\Documents\\HW4_Datasets_1.txt");
     // Code Here
 }
