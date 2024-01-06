@@ -193,16 +193,23 @@ void email_cnt(char **stored_data, int size) {
     char** E_data = (char**)malloc((count+1)*sizeof(char*));
     E_data[count]=NULL;
     for(int i=0; i<count; i++){
-    	E_data[i] = (char*)malloc(100*sizeof(char));
+    	E_data[i] = (char*)malloc((MAX_USER_DATA_LENGTH)*sizeof(char));
 	}
 
 	for(int i=0; i<count; i++){
         char* flag1 = strchr(stored_data[i], '@');
         char* flag2 = strchr((stored_data)[i], '.');
+        if(!(flag1)||!(flag2)){
+            perror("Memory allocation failed");
+            return;
+        }
         if(flag1>flag2){
         	flag2 = strchr((stored_data)[i]+(int)(flag2-stored_data[i]+1), '.');
 		}
-		
+		if(!(flag2)){
+            perror("Memory allocation failed");
+            return;
+        }
         strncpy(E_data[i], stored_data[i]+(int)(flag1-stored_data[i])+1, flag2-flag1-1);
 
         E_data[i][(int)(flag2-flag1)-1] = '\0';
@@ -228,7 +235,11 @@ void email_cnt(char **stored_data, int size) {
 	printf("AUT: %d\n", mailcounter[2]);
 	printf("Hotmail: %d\n", mailcounter[3]);
 	printf("Others: %d\n", mailcounter[4]);
-	
+    
+    for (int i = 0; i < count; i++) {
+        free((E_data[i]));
+    }
+    free(E_data);
 	
     // Code here
 }
@@ -252,7 +263,7 @@ void end_program(char ***stored_data, int size) {
         perror("Error opening backup file");
         return;
     }
-    for (int i = 0; i < count-1; i++) {
+    for (int i = 0; i < count; i++) {
         free((*stored_data)[i]);
     }
     free(*stored_data);
