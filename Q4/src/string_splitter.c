@@ -4,6 +4,7 @@
 #include <ctype.h> 
 #define Max_Size 100
 
+
 char** splitString(const char* input, char delimiter, int* substringCount ){
 	*substringCount=0;
     char** result = (char**)malloc(1*sizeof(char*));
@@ -29,16 +30,17 @@ char** splitString(const char* input, char delimiter, int* substringCount ){
 //        printf("%s\n%s\n%s\n%s\n\n", pstr1, pstr2, pstr3, result[*substringCount]);
         (*substringCount)++;
         pstr1=pstr2+1;
-        if(*pstr1==delimiter){
+        while(*(pstr1++)==delimiter){
         	result = (char**)realloc(result, (*substringCount+2)*sizeof(char*));
         	result[*substringCount]=strdup("");
         	(*substringCount)++;
 		}
-	    while(*(pstr1++)==delimiter) continue;
+//	    while(*(pstr1++)==delimiter) continue;
 	    pstr1--;
 	}while(true);
-	(*substringCount)++;
+		
 //    printf("%s\n%s\n%s\n\n", result[0], result[1], result[2]);
+    (*substringCount)++;
     return result;
 }
     
