@@ -37,7 +37,7 @@ char** splitString(const char* input, char delimiter, int* substringCount ){
 	    while(*(pstr1++)==delimiter) continue;
 	    pstr1--;
 	}while(true);
-		
+	(*substringCount)++;
 //    printf("%s\n%s\n%s\n\n", result[0], result[1], result[2]);
     return result;
 }
