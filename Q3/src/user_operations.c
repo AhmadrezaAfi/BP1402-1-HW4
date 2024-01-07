@@ -66,7 +66,7 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
-	do{
+	while(count<size){
 		char uname[MAX_USER_DATA_LENGTH];
     // Extract the user name from the stored data
 //        if (count>size || count<0) {
@@ -78,6 +78,10 @@ void show_users(char **stored_data, int size) {
         }
 
         char* pname = strchr((stored_data[count]), ' ');
+        if(!pname){
+            perror("Problem Occured.\n");
+            return;
+        }
         strncpy(uname, stored_data[count], (size_t)(pname-(stored_data[count])));
         uname[(int)(pname-stored_data[count])] = '\0';
         count++;
@@ -105,7 +109,7 @@ void show_users(char **stored_data, int size) {
 		}
     // Print the formatted user name
 	   printf("%s\n", uname);
-    } while(count<size);
+    }
 
 }
 
@@ -140,7 +144,15 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     (*stored_data) = (char**)realloc((*stored_data), (count + 2) * sizeof(char*));
 //    *stored_data = temp;
     // Add the new user data
+    if(!(*stored_data)){
+        perror("Memory allocation failed");
+        return;
+    }
     (*stored_data)[count] = (char*)malloc(strlen(new_user_data)*sizeof(char));
+    if(!((*stored_data)[count])){
+        perror("Memory allocation failed");
+        return;
+    }
     strcpy((*stored_data)[count], new_user_data);
     (*stored_data)[count + 1] = NULL;
     (*size)++;
@@ -154,21 +166,32 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
     int i;
     for (i = 0; i < count; ++i) {
 		char* uname;
-		uname = (char*)malloc(100*sizeof(char));
-
+		uname = (char*)malloc((MAX_USER_DATA_LENGTH)*sizeof(char));
+        if(!(uname)){
+            perror("Memory allocation failed");
+            return;
+        }
         char* pname = strchr(((*stored_data[i])), ' ');
+        if(!(pname)){
+            perror("Problem Occured");
+            return;
+        }
         strncpy(uname, ((*stored_data[i])), pname-((*stored_data[i])));
         uname[(int)(pname-((*stored_data[i])))] = '\0';
         if (strcmp(uname, user_name) == 0) {
             free((*stored_data)[i]);
+
             for(int j=i; j<count-1; j++){
             	(*stored_data)[j]=(*stored_data)[j+1];
 			}
+            free((*stored_data)[count]);
 			(*stored_data)=(char**)realloc((*stored_data), (count)*sizeof(char*));
 			(*stored_data)[count-1]=NULL;
 			(*size)--;
+			free(uname);
             break;
         }
+        free(uname);
     }
     if(i==count){
     	printf("User not found!\n");
@@ -182,6 +205,7 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
 //    (*stored_data)=(char**)realloc(*stored_data, (count -1) * sizeof(char*));
 //    (*stored_data)[count - 1] = NULL;
 //    *size = count-1;
+//    free(uname);
     printf("User deleted!\n");
 }
 
@@ -247,6 +271,7 @@ void email_cnt(char **stored_data, int size) {
 
 void end_program(char ***stored_data, int size) {
 	int count=size;
+//    printf("%d\n", count);
     FILE *backup_file = fopen("HW4_Datasets_1.txt", "w");
     // Only proceed if the file opened successfully.
     if (backup_file != NULL) {
@@ -264,9 +289,13 @@ void end_program(char ***stored_data, int size) {
         return;
     }
     for (int i = 0; i < count; i++) {
+        if((*stored_data)[i]==NULL){
+            continue;
+        }
         free((*stored_data)[i]);
+//        printf("%s  ___  %d\n",(*stored_data)[i+1], i+1);
     }
     free(*stored_data);
-//    remove("C:\\Documents\\HW4_Datasets_1.txt");
+//    remove("HW4_Datasets_1.txt");
     // Code Here
 }
