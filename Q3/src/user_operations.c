@@ -149,7 +149,7 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
         perror("Memory allocation failed");
         return;
     }
-    (*stored_data)[count] = (char*)malloc(strlen(new_user_data)*sizeof(char));
+    (*stored_data)[count] = (char*)malloc((strlen(new_user_data)+1)*sizeof(char));
     if(!((*stored_data)[count])){
         perror("Memory allocation failed");
         return;
