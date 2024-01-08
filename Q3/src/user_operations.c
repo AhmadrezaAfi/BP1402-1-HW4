@@ -123,8 +123,21 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     strcat(new_user_data, " ");
     strcat(new_user_data, password);
     new_user_data[strlen(user_name)+strlen(email)+strlen(password)+2]='\0';
+    printf("%s\n", new_user_data);
+    for (int i = 0; i < count; i++) {
+// Extract the user name from the stored data
+//        if (count>size || count<0) {
+//            exit(EXIT_FAILURE);
+//        }
 
-    for (int i = 0; i < count-1; i++) {
+        char* pname = strchr(((*stored_data)[i]), ' ');
+        if(!pname){
+            perror("Problem Occured.\n");
+            return;
+        }
+        char* uname = (char*)malloc((size_t)(pname-(((*stored_data)[i])))*sizeof(char));
+        strncpy(uname, ((*stored_data)[i]), (size_t)(pname-(((*stored_data)[i]))));
+        uname[(int)(pname-((*stored_data)[i]))] = '\0';
         if (i>*size || count<0) {
             exit(EXIT_FAILURE);
         }
@@ -132,10 +145,13 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
             fprintf(stderr, "stored_data[count] is not initialized.\n");
             exit(EXIT_FAILURE);
         }
-        if (strcmp((*stored_data)[i], new_user_data) == 0) {
+//        printf("%s***%s***%d\n", uname, user_name, (uname, user_name));
+        if (strcmp(uname, user_name) == 0) {
             printf("User already exists!\n");
+            free(uname);
             return;
         }
+        free(uname);
     }
 
     // Allocate memory for the new user data
@@ -161,23 +177,28 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
 }
 
 void delete_user(char ***stored_data, int *size, const char *user_name) {
-    int count = *size;
+    int count =*size;
     // Free memory for the deleted user data
     int i;
     for (i = 0; i < count; ++i) {
-		char* uname;
-		uname = (char*)malloc((MAX_USER_DATA_LENGTH)*sizeof(char));
-        if(!(uname)){
-            perror("Memory allocation failed");
-            return;
-        }
-        char* pname = strchr(((*stored_data[i])), ' ');
+    	
+		char uname[MAX_USER_DATA_LENGTH];
+
+        char* pname = strchr(((*stored_data)[i]), ' ');
+
         if(!(pname)){
             perror("Problem Occured");
             return;
         }
-        strncpy(uname, ((*stored_data[i])), pname-((*stored_data[i])));
-        uname[(int)(pname-((*stored_data[i])))] = '\0';
+        
+//        if(!(uname)){
+//            perror("Memory allocation failed");
+//            return;
+//        }
+        
+        strncpy(uname, ((*stored_data)[i]), pname-((*stored_data)[i]));
+//        printf("%s\n", uname);
+//        printf("%s***%s***%d\n", uname, user_name, strcmp(uname, user_name));
         if (strcmp(uname, user_name) == 0) {
             free((*stored_data)[i]);
 
@@ -189,10 +210,10 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
 			(*stored_data)=(char**)realloc((*stored_data), (count-1)*sizeof(char*));
 //			(*stored_data)[count-1]=NULL;
 			(*size)--;
-			free(uname);
+//			free(uname);
             break;
         }
-        free(uname);
+//        free(uname);
     }
     if(i==count){
     	printf("User not found!\n");
