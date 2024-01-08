@@ -66,6 +66,7 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
+
 	while(count<size){
 		char uname[MAX_USER_DATA_LENGTH];
     // Extract the user name from the stored data
@@ -76,9 +77,8 @@ void show_users(char **stored_data, int size) {
             perror("stored_data[count] is not initialized.\n");
             return;
         }
-        
-        const char* temp = ((stored_data)[count]);
-        char* pname = strchr(temp, ' ');
+
+        char* pname = strchr((stored_data[count]), ' ');
         if(!pname){
             perror("Problem Occured.\n");
             return;
@@ -115,7 +115,7 @@ void show_users(char **stored_data, int size) {
 }
 
 void new_user(char ***stored_data, int *size, const char *user_name, const char *email, const char *password) {
-    int count = *size;
+    int count = 0;
     // Check if the user already exists
     char new_user_data[MAX_USER_DATA_LENGTH];
     strcpy(new_user_data, user_name);
@@ -125,24 +125,24 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     strcat(new_user_data, password);
     new_user_data[strlen(user_name)+strlen(email)+strlen(password)+2]='\0';
 //    printf("%s\n", new_user_data);
-    for (int i = 0; i < count; i++) {
+    while(count<*size) {
+    	char uname[MAX_USER_DATA_LENGTH];
 // Extract the user name from the stored data
 //        if (count>size || count<0) {
 //            exit(EXIT_FAILURE);
 //        }
-        const char* temp = ((*stored_data)[i]);
-        char* pname = strchr((temp), ' ');
+//        printf("%s\n", ((*stored_data)[count]));
+        char* pname = strchr(((*stored_data)[count]), ' ');
         if(!pname){
             perror("Problem Occured.\n");
             return;
         }
-        char uname[MAX_USER_DATA_LENGTH];
-        strncpy(uname, ((*stored_data)[i]), (size_t)(pname-(((*stored_data)[i]))));
-        uname[(int)(pname-((*stored_data)[i]))] = '\0';
-        if (i>*size || count<0) {
+        strncpy(uname, ((*stored_data)[count]), (size_t)(pname-(((*stored_data)[count]))));
+        uname[(int)(pname-((*stored_data)[count]))] = '\0';
+        if (count>*size || count<0) {
             exit(EXIT_FAILURE);
         }
-        if (!(*stored_data)[i]) {
+        if (!((*stored_data)[count])) {
             fprintf(stderr, "stored_data[count] is not initialized.\n");
             exit(EXIT_FAILURE);
         }
@@ -152,6 +152,7 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
 
             return;
         }
+        count++;
 
     }
 
@@ -159,21 +160,21 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     // Format the new user data
     // Resize the stored_data array
 
-    (*stored_data) = (char**)realloc((*stored_data), (count + 1) * sizeof(char*));
+    (*stored_data) = (char**)realloc((*stored_data), (*size + 1) * sizeof(char*));
 //    *stored_data = temp;
     // Add the new user data
     if(!(*stored_data)){
         perror("Memory allocation failed");
         return;
     }
-    (*stored_data)[count] = (char*)malloc((strlen(new_user_data)+1)*sizeof(char));
-    if(!((*stored_data)[count])){
+    (*stored_data)[*size] = (char*)malloc((strlen(new_user_data)+1)*sizeof(char));
+    if(!((*stored_data)[*size])){
         perror("Memory allocation failed");
         return;
     }
-    strcpy((*stored_data)[count], new_user_data);
+    strcpy((*stored_data)[*size], new_user_data);
 //    (*stored_data)[count] = NULL;
-    count = ++(*size);
+    (*size)++;
     printf("New user added!\n");
 }
 
@@ -184,8 +185,8 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
     for (i = 0; i < count; ++i) {
     	
 		char uname[MAX_USER_DATA_LENGTH];
-        const char* temp = ((*stored_data)[i]);
-        char* pname = strchr((temp), ' ');
+
+        char* pname = strchr(((*stored_data)[i]), ' ');
 
         if(!(pname)){
             perror("Problem Occured");
@@ -244,17 +245,15 @@ void email_cnt(char **stored_data, int size) {
 	}
 
 	for(int i=0; i<count; i++){
-		const char* temp = ((stored_data)[i]);
 
-        char* flag1 = strchr((temp), '@');
-        char* flag2 = strchr((temp), '.');
+        char* flag1 = strchr(stored_data[i], '@');
+        char* flag2 = strchr((stored_data)[i], '.');
         if(!(flag1)||!(flag2)){
             perror("Memory allocation failed");
             return;
         }
         while(flag1>flag2){
-        	const char* temp = ((stored_data)[i])+(int)(flag2-stored_data[i]+1);
-        	flag2 = strchr((temp), '.');
+        	flag2 = strchr((stored_data)[i]+(int)(flag2-stored_data[i]+1), '.');
 		}
 		if(!(flag2)){
             perror("Memory allocation failed");
