@@ -243,13 +243,14 @@ void email_cnt(char **stored_data, int size) {
 	}
 
 	for(int i=0; i<count; i++){
+
         char* flag1 = strchr(stored_data[i], '@');
         char* flag2 = strchr((stored_data)[i], '.');
         if(!(flag1)||!(flag2)){
             perror("Memory allocation failed");
             return;
         }
-        if(flag1>flag2){
+        while(flag1>flag2){
         	flag2 = strchr((stored_data)[i]+(int)(flag2-stored_data[i]+1), '.');
 		}
 		if(!(flag2)){
