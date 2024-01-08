@@ -123,7 +123,7 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     strcat(new_user_data, " ");
     strcat(new_user_data, password);
     new_user_data[strlen(user_name)+strlen(email)+strlen(password)+2]='\0';
-    printf("%s\n", new_user_data);
+//    printf("%s\n", new_user_data);
     for (int i = 0; i < count; i++) {
 // Extract the user name from the stored data
 //        if (count>size || count<0) {
@@ -131,9 +131,9 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
 //        }
 
         char* pname = strchr(((*stored_data)[i]), ' ');
-        if(!pname){
-            perror("Problem Occured.\n");
-            return;
+ //       if(!pname){
+ //           perror("Problem Occured.\n");
+ //           return;
         }
         char* uname = (char*)malloc((size_t)(pname-(((*stored_data)[i])))*sizeof(char));
         strncpy(uname, ((*stored_data)[i]), (size_t)(pname-(((*stored_data)[i]))));
