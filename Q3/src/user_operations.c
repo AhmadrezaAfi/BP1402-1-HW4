@@ -125,27 +125,26 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     strcat(new_user_data, password);
     new_user_data[strlen(user_name)+strlen(email)+strlen(password)+2]='\0';
 //    printf("%s\n", new_user_data);
-    while(count<*size) {
-    	char uname[MAX_USER_DATA_LENGTH];
-// Extract the user name from the stored data
+	while(count<*size){
+		char uname[MAX_USER_DATA_LENGTH];
+    // Extract the user name from the stored data
 //        if (count>size || count<0) {
 //            exit(EXIT_FAILURE);
 //        }
-//        printf("%s\n", ((*stored_data)[count]));
+        if (!(*stored_data)[count]) {
+            perror("stored_data[count] is not initialized.\n");
+            return;
+        }
+
         char* pname = strchr(((*stored_data)[count]), ' ');
         if(!pname){
             perror("Problem Occured.\n");
             return;
         }
-        strncpy(uname, ((*stored_data)[count]), (size_t)(pname-(((*stored_data)[count]))));
-        uname[(int)(pname-((*stored_data)[count]))] = '\0';
-        if (count>*size || count<0) {
-            exit(EXIT_FAILURE);
-        }
-        if (!((*stored_data)[count])) {
-            fprintf(stderr, "stored_data[count] is not initialized.\n");
-            exit(EXIT_FAILURE);
-        }
+        strncpy(uname, (*stored_data)[count], (size_t)(pname-((*stored_data)[count])));
+        uname[(int)(pname-(*stored_data)[count])] = '\0';
+        count++;
+    // Capitalize 
 //        printf("%s***%s***%d\n", uname, user_name, (uname, user_name));
         if (strcmp(uname, user_name) == 0) {
             printf("User already exists!\n");
