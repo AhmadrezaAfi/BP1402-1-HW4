@@ -213,14 +213,14 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
 //			(*stored_data)[count-1]=NULL;
 			(*size)--;
 //			free(uname);
-            break;
+            printf("User deleted!\n");
+            return;
         }
 //        free(uname);
     }
-    if(i==count){
-    	printf("User not found!\n");
-    	return;
-	}
+
+    printf("User not found!\n");
+    return;
     // Shift the remaining users to fill the gap
 //    for(int j=i; j<count-1; j++){
 //    	(*stored_data)[j]=(*stored_data)[j+1];
@@ -230,7 +230,7 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
 //    (*stored_data)[count - 1] = NULL;
 //    *size = count-1;
 //    free(uname);
-    printf("User deleted!\n");
+    
 }
 
 void email_cnt(char **stored_data, int size) {
