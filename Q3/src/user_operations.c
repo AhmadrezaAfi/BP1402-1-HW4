@@ -76,8 +76,9 @@ void show_users(char **stored_data, int size) {
             perror("stored_data[count] is not initialized.\n");
             return;
         }
-
-        char* pname = strchr((stored_data[count]), ' ');
+        
+        const char* temp = ((stored_data)[count]);
+        char* pname = strchr(temp, ' ');
         if(!pname){
             perror("Problem Occured.\n");
             return;
@@ -130,7 +131,7 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
 //            exit(EXIT_FAILURE);
 //        }
         const char* temp = ((*stored_data)[i]);
-        char* pname = strchr((const char*)(temp), ' ');
+        char* pname = strchr((temp), ' ');
         if(!pname){
             perror("Problem Occured.\n");
             return;
@@ -184,7 +185,7 @@ void delete_user(char ***stored_data, int *size, const char *user_name) {
     	
 		char uname[MAX_USER_DATA_LENGTH];
         const char* temp = ((*stored_data)[i]);
-        char* pname = strchr((const char*)(temp), ' ');
+        char* pname = strchr((temp), ' ');
 
         if(!(pname)){
             perror("Problem Occured");
@@ -245,15 +246,15 @@ void email_cnt(char **stored_data, int size) {
 	for(int i=0; i<count; i++){
 		const char* temp = ((stored_data)[i]);
 
-        char* flag1 = strchr((const char*)(temp), '@');
-        char* flag2 = strchr((const char*)(temp), '.');
+        char* flag1 = strchr((temp), '@');
+        char* flag2 = strchr((temp), '.');
         if(!(flag1)||!(flag2)){
             perror("Memory allocation failed");
             return;
         }
         while(flag1>flag2){
         	const char* temp = ((stored_data)[i])+(int)(flag2-stored_data[i]+1);
-        	flag2 = strchr((const char*)(temp), '.');
+        	flag2 = strchr((temp), '.');
 		}
 		if(!(flag2)){
             perror("Memory allocation failed");
