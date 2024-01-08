@@ -132,10 +132,10 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
 
         char* pname = strchr(((*stored_data)[i]), ' ');
         if(!pname){
- //           perror("Problem Occured.\n");
+            perror("Problem Occured.\n");
             return;
         }
-        char* uname = (char*)malloc((size_t)(pname-(((*stored_data)[i])))*sizeof(char));
+        char uname[MAX_USER_DATA_LENGTH];
         strncpy(uname, ((*stored_data)[i]), (size_t)(pname-(((*stored_data)[i]))));
         uname[(int)(pname-((*stored_data)[i]))] = '\0';
         if (i>*size || count<0) {
@@ -148,10 +148,10 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
 //        printf("%s***%s***%d\n", uname, user_name, (uname, user_name));
         if (strcmp(uname, user_name) == 0) {
             printf("User already exists!\n");
-            free(uname);
+
             return;
         }
-        free(uname);
+
     }
 
     // Allocate memory for the new user data
