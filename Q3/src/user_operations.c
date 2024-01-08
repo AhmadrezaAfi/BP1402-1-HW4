@@ -131,9 +131,9 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
 //        }
 
         char* pname = strchr(((*stored_data)[i]), ' ');
- //       if(!pname){
+        if(!pname){
  //           perror("Problem Occured.\n");
- //           return;
+            return;
         }
         char* uname = (char*)malloc((size_t)(pname-(((*stored_data)[i])))*sizeof(char));
         strncpy(uname, ((*stored_data)[i]), (size_t)(pname-(((*stored_data)[i]))));
