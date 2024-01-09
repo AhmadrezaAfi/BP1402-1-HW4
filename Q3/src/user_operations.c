@@ -136,13 +136,13 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
             return;
         }
 
-        char* pname = strchr(((*stored_data)[count]), ' ');
+        char* pname = strchr(*((*stored_data)+count), ' ');
         if(!pname){
             perror("Problem Occured.\n");
             return;
         }
-        strncpy(uname, (*stored_data)[count], (size_t)(pname-((*stored_data)[count])));
-        uname[(int)(pname-(*stored_data)[count])] = '\0';
+        strncpy(uname, *((*stored_data)+count), (size_t)(pname-(*((*stored_data)+count))));
+        uname[(int)(pname-*((*stored_data)+count))] = '\0';
         count++;
     // Capitalize 
 //        printf("%s***%s***%d\n", uname, user_name, (uname, user_name));
