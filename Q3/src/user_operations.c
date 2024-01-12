@@ -6,7 +6,10 @@
 
 #define MAX_USER_DATA_LENGTH 100
 
-
+struct user_name{
+	char name[MAX_USER_DATA_LENGTH];
+};
+struct user_name names[10];
 
 void read_backup_file(char ***stored_data, int *size, const char *backup_file_name) {
     FILE *pfile = fopen(backup_file_name, "r");
@@ -18,6 +21,8 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     char line[MAX_USER_DATA_LENGTH];
     int lines = 0;
     char c;
+
+    
     // Count the number of users in the file
 
     do
@@ -33,10 +38,12 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     }
 
     // Rewind the file to the beginning
+    
     rewind(pfile);
 
     // Allocate memory for stored_data
     char **data = (char **)malloc((lines) * sizeof(char *));
+    
     if (!data) {
         perror("Memory allocation failed");
         return;
@@ -63,6 +70,30 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 
     fclose(pfile);
     *stored_data = data;
+
+    int count=0;
+    while(count<*size){
+    	char uname[MAX_USER_DATA_LENGTH];
+    // Extract the user name from the stored data
+//        if (count>size || count<0) {
+//            exit(EXIT_FAILURE);
+//        }
+        if (!(*stored_data)[count]) {
+            perror("stored_data[count] is not initialized.\n");
+            return;
+        }
+
+        char* pname = strchr(*((*stored_data)+count), ' ');
+        if(!pname){
+            perror("Problem Occured.\n");
+            return;
+        }
+        strncpy(uname, *((*stored_data)+count), (size_t)(pname-(*((*stored_data)+count))));
+        uname[(int)(pname-*((*stored_data)+count))] = '\0';
+        strcpy(names[count].name, uname);
+//        printf("%s", names[count].name);
+        count++;
+    }
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
@@ -126,27 +157,27 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     new_user_data[strlen(user_name)+strlen(email)+strlen(password)+2]='\0';
 //    printf("%s\n", new_user_data);
 	while(count<*size){
-		char uname[MAX_USER_DATA_LENGTH];
-    // Extract the user name from the stored data
-//        if (count>size || count<0) {
-//            exit(EXIT_FAILURE);
+//		char uname[MAX_USER_DATA_LENGTH];
+//    // Extract the user name from the stored data
+////        if (count>size || count<0) {
+////            exit(EXIT_FAILURE);
+////        }
+//        if (!(*stored_data)[count]) {
+//            perror("stored_data[count] is not initialized.\n");
+//            return;
 //        }
-        if (!(*stored_data)[count]) {
-            perror("stored_data[count] is not initialized.\n");
-            return;
-        }
-
-        char* pname = strchr(*((*stored_data)+count), ' ');
-        if(!pname){
-            perror("Problem Occured.\n");
-            return;
-        }
-        strncpy(uname, *((*stored_data)+count), (size_t)(pname-(*((*stored_data)+count))));
-        uname[(int)(pname-*((*stored_data)+count))] = '\0';
-        count++;
+//
+//        char* pname = strchr(*((*stored_data)+count), ' ');
+//        if(!pname){
+//            perror("Problem Occured.\n");
+//            return;
+//        }
+//        strncpy(uname, *((*stored_data)+count), (size_t)(pname-(*((*stored_data)+count))));
+//        uname[(int)(pname-*((*stored_data)+count))] = '\0';
+//        count++;
     // Capitalize 
 //        printf("%s***%s***%d\n", uname, user_name, (uname, user_name));
-        if (strcmp(uname, user_name) == 0) {
+        if (strcmp(names[count].name, user_name) == 0) {
             printf("User already exists!\n");
 
             return;
@@ -174,6 +205,7 @@ void new_user(char ***stored_data, int *size, const char *user_name, const char 
     strcpy((*stored_data)[*size], new_user_data);
 //    (*stored_data)[count] = NULL;
     (*size)++;
+    strcpy(names[count].name, user_name);
     printf("New user added!\n");
 }
 
