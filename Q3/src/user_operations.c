@@ -67,7 +67,6 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
             return;
         }
         strcpy(data[i], line);
-        printf("%s\n", data[i]);
         i++;
     }
 
@@ -108,14 +107,17 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 	        perror("Invalid format: No '@' found in email");
 	        return;
 	    }
+	    printf("%s\n", atSign);
 	    char *lastDot = strrchr(atSign, '.');
 	    if (lastDot == NULL) {
 	        perror("Invalid format: No '.' found in domain");
 	        return;
 	    }
+	    printf("%s\n", lastDot);
 	    int domainLength = lastDot - (atSign + 1);
 	    if (domainLength <= 0 || domainLength >= MAX_USER_DATA_LENGTH) {
 	        perror("Invalid domain length");
+	        printf("%s\n", lastDot);
 	        return;
 	    }
 	
