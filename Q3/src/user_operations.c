@@ -96,27 +96,33 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 //        printf("%s", names[count].name);
         count++;
     }
-    names[count-1].name[strlen(names[count-1].name)]='\0';
+
 //    printf("%s\n", names[count-1].name);
-	for(int i=0; i<*size; i++){
-
-        char* flag1 = strchr((*stored_data)[i], '@');
-        char* flag2 = strchr((*stored_data)[i], '.');
-        if(!(flag1)||!(flag2)){
-            perror("Memory allocation failed");
-            return;
-        }
-        while((int)(flag1-flag2)>0){
-        	flag2 = strchr((*stored_data)[i]+(int)(flag2-(*stored_data)[i]+1), '.');
-		}
-		if(!(flag2)){
-            perror("Memory allocation failed");
-            return;
-        }
-        strncpy(names[i].mail, (*stored_data)[i]+(int)(flag1-(*stored_data)[i])+1, flag2-flag1-1);
-
-        names[i].mail[(int)(flag2-flag1)-1] = '\0';
-        
+    count = 0;
+	while (count < *size) {
+	    char *currentUser = data[count];
+	
+	    char *atSign = strchr(currentUser, '@');
+	    if (atSign == NULL) {
+	        perror("Invalid format: No '@' found in email");
+	        return;
+	    }
+	    char *lastDot = strrchr(atSign, '.');
+	    if (lastDot == NULL) {
+	        perror("Invalid format: No '.' found in domain");
+	        return;
+	    }
+	    int domainLength = lastDot - (atSign + 1);
+	    if (domainLength <= 0 || domainLength >= MAX_USER_DATA_LENGTH) {
+	        perror("Invalid domain length");
+	        return;
+	    }
+	
+	    // Copy the domain part into the 'mail' field of 'names[count]'.
+	    strncpy(names[count].mail, atSign + 1, domainLength);
+	    names[count].mail[domainLength] = '\0'; // Null-terminate the domain string.
+	
+	    count++;
 	}
 }
 void show_users(char **stored_data, int size) {
