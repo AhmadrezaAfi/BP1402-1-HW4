@@ -8,6 +8,7 @@
 
 struct user_name{
 	char name[MAX_USER_DATA_LENGTH];
+	char mail[MAX_USER_DATA_LENGTH];
 };
 struct user_name names[10];
 
@@ -279,11 +280,11 @@ void email_cnt(char **stored_data, int size) {
 	int mailcounter[5]={0};
 	int count = size;
 
-    char** E_data = (char**)malloc((count+1)*sizeof(char*));
-    E_data[count]=NULL;
-    for(int i=0; i<count; i++){
-    	E_data[i] = (char*)malloc((MAX_USER_DATA_LENGTH)*sizeof(char));
-	}
+//    char** E_data = (char**)malloc((count+1)*sizeof(char*));
+//    E_data[count]=NULL;
+//    for(int i=0; i<count; i++){
+//    	E_data[i] = (char*)malloc((MAX_USER_DATA_LENGTH)*sizeof(char));
+//	}
 
 	for(int i=0; i<count; i++){
 
@@ -300,21 +301,21 @@ void email_cnt(char **stored_data, int size) {
             perror("Memory allocation failed");
             return;
         }
-        strncpy(E_data[i], stored_data[i]+(int)(flag1-stored_data[i])+1, flag2-flag1-1);
+        strncpy(names[i].mail, stored_data[i]+(int)(flag1-stored_data[i])+1, flag2-flag1-1);
 
-        E_data[i][(int)(flag2-flag1)-1] = '\0';
+        names[i].mail[(int)(flag2-flag1)-1] = '\0';
         
 	}
 
 
 	for(int i=0; i<count; i++){
-		if(strcmp("yahoo", E_data[i])==0)
+		if(strcmp("yahoo", names[i].mail)==0)
 		    mailcounter[0]++;
-		else if(strcmp("gmail", E_data[i])==0)
+		else if(strcmp("gmail", names[i].mail)==0)
 		    mailcounter[1]++;
-		else if(strcmp("aut", E_data[i])==0)
+		else if(strcmp("aut", names[i].mail)==0)
 		    mailcounter[2]++;
-		else if(strcmp("hotmail", E_data[i])==0)
+		else if(strcmp("hotmail", names[i].mail)==0)
 		    mailcounter[3]++;
 		else
 		    mailcounter[4]++;
@@ -326,11 +327,11 @@ void email_cnt(char **stored_data, int size) {
 	printf("Hotmail: %d\n", mailcounter[3]);
 	printf("Others: %d\n", mailcounter[4]);
     
-    for (int i = 0; i < count; i++) {
-        free((E_data[i]));
-    }
-    free(E_data);
-	
+//    for (int i = 0; i < count; i++) {
+//        free((E_data[i]));
+//    }
+//    free(E_data);
+//	
     // Code here
 }
 
