@@ -67,6 +67,7 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
             return;
         }
         strcpy(data[i], line);
+        printf("%s\n", data[i]);
         i++;
     }
 
