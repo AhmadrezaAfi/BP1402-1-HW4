@@ -97,6 +97,26 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     }
     names[count-1].name[strlen(names[count-1].name)]='\0';
 //    printf("%s\n", names[count-1].name);
+	for(int i=0; i<count; i++){
+
+        char* flag1 = strchr((*stored_data)[i], '@');
+        char* flag2 = strchr((*stored_data)[i], '.');
+        if(!(flag1)||!(flag2)){
+            perror("Memory allocation failed");
+            return;
+        }
+        while(flag1>flag2){
+        	flag2 = strchr((*stored_data)[i]+(int)(flag2-(*stored_data)[i]+1), '.');
+		}
+		if(!(flag2)){
+            perror("Memory allocation failed");
+            return;
+        }
+        strncpy(names[i].mail, (*stored_data)[i]+(int)(flag1-(*stored_data)[i])+1, flag2-flag1-1);
+
+        names[i].mail[(int)(flag2-flag1)-1] = '\0';
+        
+	}
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
@@ -286,26 +306,26 @@ void email_cnt(char **stored_data, int size) {
 //    	E_data[i] = (char*)malloc((MAX_USER_DATA_LENGTH)*sizeof(char));
 //	}
 
-	for(int i=0; i<count; i++){
-
-        char* flag1 = strchr(stored_data[i], '@');
-        char* flag2 = strchr((stored_data)[i], '.');
-        if(!(flag1)||!(flag2)){
-            perror("Memory allocation failed");
-            return;
-        }
-        while(flag1>flag2){
-        	flag2 = strchr((stored_data)[i]+(int)(flag2-stored_data[i]+1), '.');
-		}
-		if(!(flag2)){
-            perror("Memory allocation failed");
-            return;
-        }
-        strncpy(names[i].mail, stored_data[i]+(int)(flag1-stored_data[i])+1, flag2-flag1-1);
-
-        names[i].mail[(int)(flag2-flag1)-1] = '\0';
-        
-	}
+//	for(int i=0; i<count; i++){
+//
+//        char* flag1 = strchr(stored_data[i], '@');
+//        char* flag2 = strchr((stored_data)[i], '.');
+//        if(!(flag1)||!(flag2)){
+//            perror("Memory allocation failed");
+//            return;
+//        }
+//        while(flag1>flag2){
+//        	flag2 = strchr((stored_data)[i]+(int)(flag2-stored_data[i]+1), '.');
+//		}
+//		if(!(flag2)){
+//            perror("Memory allocation failed");
+//            return;
+//        }
+//        strncpy(names[i].mail, stored_data[i]+(int)(flag1-stored_data[i])+1, flag2-flag1-1);
+//
+//        names[i].mail[(int)(flag2-flag1)-1] = '\0';
+//        
+//	}
 
 
 	for(int i=0; i<count; i++){
