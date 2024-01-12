@@ -329,6 +329,7 @@ void email_cnt(char **stored_data, int size) {
 
 
 	for(int i=0; i<count; i++){
+        printf("%s\n"names[i].mail);
 		if(strcmp("yahoo", names[i].mail)==0 || strcmp("Yahoo", names[i].mail)==0)
 		    mailcounter[0]++;
 		else if(strcmp("gmail", names[i].mail)==0)
