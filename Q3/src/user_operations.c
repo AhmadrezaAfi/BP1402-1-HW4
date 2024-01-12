@@ -100,24 +100,26 @@ void show_users(char **stored_data, int size) {
 
 	while(count<size){
 		char uname[MAX_USER_DATA_LENGTH];
-    // Extract the user name from the stored data
-//        if (count>size || count<0) {
-//            exit(EXIT_FAILURE);
+//    // Extract the user name from the stored data
+////        if (count>size || count<0) {
+////            exit(EXIT_FAILURE);
+////        }
+//        if (!stored_data[count]) {
+//            perror("stored_data[count] is not initialized.\n");
+//            return;
 //        }
-        if (!stored_data[count]) {
-            perror("stored_data[count] is not initialized.\n");
-            return;
-        }
-
-        char* pname = strchr((stored_data[count]), ' ');
-        if(!pname){
-            perror("Problem Occured.\n");
-            return;
-        }
-        strncpy(uname, stored_data[count], (size_t)(pname-(stored_data[count])));
-        uname[(int)(pname-stored_data[count])] = '\0';
-        count++;
+//
+//        char* pname = strchr((stored_data[count]), ' ');
+//        if(!pname){
+//            perror("Problem Occured.\n");
+//            return;
+//        }
+//        strncpy(uname, stored_data[count], (size_t)(pname-(stored_data[count])));
+//        uname[(int)(pname-stored_data[count])] = '\0';
+//        count++;
     // Capitalize the first letter of each word in the user name
+        strcpy(uname, names[count].name);
+        count++;
         for(size_t i=0; i<strlen(uname); i++){
         	if(uname[i]=='_'){
                 i++;
