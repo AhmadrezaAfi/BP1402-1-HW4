@@ -94,7 +94,7 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 //        printf("%s", names[count].name);
         count++;
     }
-    names[count-1].name[strlen(names[count-1].name)-1]='\0';
+    names[count-1].name[strlen(names[count-1].name)-2]='\0';
 //    printf("%s\n", names[count-1].name);
 }
 void show_users(char **stored_data, int size) {
