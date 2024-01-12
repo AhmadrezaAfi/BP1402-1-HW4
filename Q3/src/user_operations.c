@@ -121,7 +121,7 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
 	    // Copy the domain part into the 'mail' field of 'names[count]'.
 	    strncpy(names[count].mail, atSign + 1, domainLength);
 	    names[count].mail[domainLength] = '\0'; // Null-terminate the domain string.
-	
+	    printf("%s\n", names[count].mail);
 	    count++;
 	}
 }
@@ -334,20 +334,21 @@ void email_cnt(char **stored_data, int size) {
 //        
 //	}
 
-
-	for(int i=0; i<count; i++){
-		if(strcmp("yahoo", names[i].mail)==0 || strcmp("Yahoo", names[i].mail)==0)
-		    mailcounter[0]++;
-		else if(strcmp("gmail", names[i].mail)==0)
-		    mailcounter[1]++;
-		else if(strcmp("aut", names[i].mail)==0)
-		    mailcounter[2]++;
-		else if(strcmp("hotmail", names[i].mail)==0)
-		    mailcounter[3]++;
-		else
-		    mailcounter[4]++;
-		    
-	}
+    
+    for(int i = 0; i < size; ++i) {
+    	printf("%s\n", names[i].mail);
+        if(strcasecmp(names[i].mail, "yahoo") == 0) {
+            mailcounter[0]++;
+        } else if(strcasecmp(names[i].mail, "gmail") == 0) {
+            mailcounter[1]++;
+        } else if(strcasecmp(names[i].mail, "aut.ac") == 0) {
+            mailcounter[2]++;
+        } else if(strcasecmp(names[i].mail, "hotmail") == 0) {
+            mailcounter[3]++;
+        } else {
+            mailcounter[4]++; 
+        }
+    }
 	printf("Yahoo: %d\n", mailcounter[0]);
 	printf("Gmail: %d\n", mailcounter[1]);
 	printf("AUT: %d\n", mailcounter[2]);
