@@ -329,7 +329,7 @@ void email_cnt(char **stored_data, int size) {
 
 
 	for(int i=0; i<count; i++){
-		if(strcmp("yahoo", names[i].mail)==0)
+		if(strcmp("yahoo", names[i].mail)==0 || strcmp("Yahoo", names[i].mail)==0)
 		    mailcounter[0]++;
 		else if(strcmp("gmail", names[i].mail)==0)
 		    mailcounter[1]++;
@@ -353,37 +353,4 @@ void email_cnt(char **stored_data, int size) {
 //    free(E_data);
 //	
     // Code here
-}
-
-
-void end_program(char ***stored_data, int size) {
-	int count=size;
-//    printf("%d\n", count);
-    FILE *backup_file = fopen("HW4_Datasets_1.txt", "w");
-    // Only proceed if the file opened successfully.
-    if (backup_file != NULL) {
-        for (int i = 0; i < count; i++) {
-            // Check if string is not NULL before writing.
-            if ((*stored_data)[i] != NULL) {
-                fprintf(backup_file, "%s\n", (*stored_data)[i]);
-            }
-        }
-        fclose(backup_file); // Close the file when done.
-    } 
-    else {
-        // Handle error - file opening failed.
-        perror("Error opening backup file");
-        return;
-    }
-    for (int i = 0; i < count; i++) {
-//        if((*stored_data)[i]==NULL){
-//            continue;
-//        }
-//        printf("%s\n",(*stored_data)[i] );
-        free((*stored_data)[i]);
-//        printf("%s  ___  %d\n",(*stored_data)[i+1], i+1);
-    }
-    free(*stored_data);
-//    remove("HW4_Datasets_1.txt");
-    // Code Here
 }
