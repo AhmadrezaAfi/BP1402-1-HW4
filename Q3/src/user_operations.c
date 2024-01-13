@@ -98,35 +98,27 @@ void read_backup_file(char ***stored_data, int *size, const char *backup_file_na
     }
 
 //    printf("%s\n", names[count-1].name);
-    count = 0;
-	while (count < *size) {
-	    char *currentUser = data[count];
-	
-	    char *atSign = strchr(currentUser, '@');
-	    if (atSign == NULL) {
-	        perror("Invalid format: No '@' found in email");
-	        return;
-	    }
-	    printf("%s\n", atSign);
-	    char *lastDot = strrchr(atSign, '.');
-	    if (lastDot == NULL) {
-	        perror("Invalid format: No '.' found in domain");
-	        return;
-	    }
-	    printf("%s\n", lastDot);
-	    int domainLength = lastDot - (atSign + 1);
-	    if (domainLength <= 0 || domainLength >= MAX_USER_DATA_LENGTH) {
-	        perror("Invalid domain length");
-	        printf("%s\n", lastDot);
-	        return;
-	    }
-	
-	    // Copy the domain part into the 'mail' field of 'names[count]'.
-	    strncpy(names[count].mail, atSign + 1, domainLength);
-	    names[count].mail[domainLength] = '\0'; // Null-terminate the domain string.
-	    printf("%s\n", names[count].mail);
-	    count++;
-	}
+	for(int i=0; i<*size; i++){
+		const char* temp = ((*stored_data)[i]);
+
+        char* flag1 = strchr((temp), '@');
+        char* flag2 = strchr((temp), '.');
+        if(!(flag1)||!(flag2)){
+            perror("Memory allocation failed");
+            return;
+        }
+        while(flag1>flag2){
+        	const char* temp = ((*stored_data)[i])+(int)(flag2-(*stored_data)[i]+1);
+        	flag2 = strchr((temp), '.');
+		}
+		if(!(flag2)){
+            perror("Memory allocation failed");
+            return;
+        }
+        strncpy(names[i].mail, (*stored_data)[i]+(int)(flag1-(*stored_data)[i])+1, flag2-flag1-1);
+
+        names[i].mail[(int)(flag2-flag1)-1] = '\0';
+    }
 }
 void show_users(char **stored_data, int size) {
 	int count = 0;
